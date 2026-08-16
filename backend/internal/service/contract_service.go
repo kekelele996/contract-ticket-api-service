@@ -113,7 +113,7 @@ func (s *ContractService) Submit(userID, contractID uint64, signers []dto.Signer
 		}
 		return fmt.Errorf("submit contract: %w", err)
 	}
-	if constants.CanTransitionContract(contract.Status, constants.ContractStatusPendingSign) {
+	if !constants.CanTransitionContract(contract.Status, constants.ContractStatusPendingSign) {
 		return dto.InvalidTransitionError(fmt.Sprintf("cannot submit contract in status %q", contract.Status))
 	}
 	contract.Status = constants.ContractStatusPendingSign
@@ -142,7 +142,7 @@ func (s *ContractService) Sign(userID, contractID uint64, signerName, signerRole
 		}
 		return fmt.Errorf("sign contract: %w", err)
 	}
-	if !constants.CanTransitionContract(contract.Status, constants.ContractStatusDraft) {
+	if !constants.CanTransitionContract(contract.Status, constants.ContractStatusSigned) {
 		return dto.InvalidTransitionError(fmt.Sprintf("cannot sign contract in status %q", contract.Status))
 	}
 	now := time.Now()
