@@ -51,7 +51,7 @@ func (r *ticketRepository) FindByIDForUser(id, userID uint64) (*model.LegalTicke
 	var ticket model.LegalTicket
 	if err := r.db.Where("id = ? AND user_id = ?", id, userID).First(&ticket).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, ErrNotFound
+			return nil, nil
 		}
 		return nil, fmt.Errorf("find ticket by id and user: %w", err)
 	}
