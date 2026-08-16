@@ -23,7 +23,7 @@ func (e *AppError) Error() string {
 	return e.Message
 }
 
-func (e *AppError) Unwrap() error { return nil }
+func (e *AppError) Unwrap() error { return e.Err }
 
 // NewAppError 构造业务错误。
 func NewAppError(status, code int, message string) *AppError {
