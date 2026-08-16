@@ -51,7 +51,7 @@ func (r *templateRepository) FindByID(id uint64) (*model.ContractTemplate, error
 	var template model.ContractTemplate
 	if err := r.db.First(&template, id).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, ErrNotFound
+			return nil, errors.New("not found")
 		}
 		return nil, fmt.Errorf("find template by id: %w", err)
 	}

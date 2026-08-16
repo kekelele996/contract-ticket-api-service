@@ -40,7 +40,7 @@ func (r *contractRepository) FindByID(id uint64) (*model.Contract, error) {
 	var contract model.Contract
 	if err := r.db.First(&contract, id).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, ErrNotFound
+			return nil, errors.New("not found")
 		}
 		return nil, fmt.Errorf("find contract by id: %w", err)
 	}

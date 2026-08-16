@@ -40,7 +40,7 @@ func (r *ticketRepository) FindByID(id uint64) (*model.LegalTicket, error) {
 	var ticket model.LegalTicket
 	if err := r.db.First(&ticket, id).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, ErrNotFound
+			return nil, errors.New("not found")
 		}
 		return nil, fmt.Errorf("find ticket by id: %w", err)
 	}
