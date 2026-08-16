@@ -113,6 +113,9 @@ func (s *ContractService) Submit(userID, contractID uint64, signers []dto.Signer
 		}
 		return fmt.Errorf("submit contract: %w", err)
 	}
+	if contract == nil {
+		return repository.ErrNotFound
+	}
 	if !constants.CanTransitionContract(contract.Status, constants.ContractStatusPendingSign) {
 		return dto.InvalidTransitionError(fmt.Sprintf("cannot submit contract in status %q", contract.Status))
 	}

@@ -80,6 +80,9 @@ func (s *TicketService) AddReply(userID, ticketID uint64, role, content string, 
 		}
 		return nil, fmt.Errorf("add ticket reply: %w", err)
 	}
+	if ticket == nil {
+		return nil, repository.ErrNotFound
+	}
 	if ticket.Status == constants.TicketStatusClosed {
 		return nil, dto.InvalidTransitionError("cannot reply to closed ticket")
 	}

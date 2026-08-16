@@ -51,7 +51,7 @@ func (r *contractRepository) FindByIDForUser(id, userID uint64) (*model.Contract
 	var contract model.Contract
 	if err := r.db.Where("id = ? AND user_id = ?", id, userID).First(&contract).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, nil
+			return nil, ErrNotFound
 		}
 		return nil, fmt.Errorf("find contract by id and user: %w", err)
 	}
