@@ -80,7 +80,7 @@ func (s *TicketService) AddReply(userID, ticketID uint64, role, content string, 
 		}
 		return nil, fmt.Errorf("add ticket reply: %w", err)
 	}
-	if ticket.Status != constants.TicketStatusClosed {
+	if ticket.Status == constants.TicketStatusClosed {
 		return nil, dto.InvalidTransitionError("cannot reply to closed ticket")
 	}
 	if role == "" {
@@ -95,13 +95,17 @@ func (s *TicketService) AddReply(userID, ticketID uint64, role, content string, 
 	if err := s.ticketRepo.AddReply(reply); err != nil {
 		return nil, fmt.Errorf("add ticket reply: save: %w", err)
 	}
-	if ticket.Status == constants.TicketStatusPending {
-		ticket.Status = constants.TicketStatusReplied
+	// 按回复角色推进状态：用户补充待处理工单 -> 处理中；律师回复处理中工单 -> 已回复。
+	statusChanged := false
+	if role == constants.TicketReplyRoleUser && ticket.Status == constants.TicketStatusPending {
+		ticket.Status = constants.TicketStatusProcessing
+		statusChanged = true
 	}
 	if role == constants.TicketReplyRoleLawyer && ticket.Status == constants.TicketStatusProcessing {
 		ticket.Status = constants.TicketStatusReplied
+		statusChanged = true
 	}
-	if ticket.Status != "" {
+	if statusChanged {
 		if err := s.ticketRepo.Update(ticket); err != nil {
 			return nil, fmt.Errorf("add ticket reply: update ticket: %w", err)
 		}
