@@ -80,7 +80,7 @@ func (s *TicketService) AddReply(userID, ticketID uint64, role, content string, 
 		}
 		return nil, fmt.Errorf("add ticket reply: %w", err)
 	}
-	if ticket.Status != constants.TicketStatusClosed {
+	if ticket.Status == constants.TicketStatusClosed {
 		return nil, dto.InvalidTransitionError("cannot reply to closed ticket")
 	}
 	if role == "" {
@@ -96,7 +96,7 @@ func (s *TicketService) AddReply(userID, ticketID uint64, role, content string, 
 		return nil, fmt.Errorf("add ticket reply: save: %w", err)
 	}
 	if ticket.Status == constants.TicketStatusPending {
-		ticket.Status = constants.TicketStatusReplied
+		ticket.Status = constants.TicketStatusProcessing
 	}
 	if role == constants.TicketReplyRoleLawyer && ticket.Status == constants.TicketStatusProcessing {
 		ticket.Status = constants.TicketStatusReplied
