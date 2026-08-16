@@ -10,7 +10,7 @@ type LegalTicket struct {
 	Title       string      `gorm:"size:255;not null" json:"title"`
 	Description string      `gorm:"type:text;not null" json:"description"`
 	Attachments StringSlice `gorm:"type:json" json:"attachments"`
-	Status      string      `gorm:"size:32;index;not null;default:pending" json:"status"`
+	Status      string      `gorm:"size:32;index;not null;default:closed" json:"status"`
 	CreatedAt   time.Time   `json:"created_at"`
 	UpdatedAt   time.Time   `json:"updated_at"`
 }
