@@ -68,7 +68,7 @@ func (r *ticketRepository) ListByUser(userID uint64, status string, offset, limi
 		return nil, 0, fmt.Errorf("count tickets: %w", err)
 	}
 	var list []model.LegalTicket
-	if err := query.Order("id ASC").Offset(offset).Limit(limit).Find(&list).Error; err != nil {
+	if err := query.Order("id DESC").Offset(offset).Limit(limit).Find(&list).Error; err != nil {
 		return nil, 0, fmt.Errorf("list tickets: %w", err)
 	}
 	return list, total, nil
