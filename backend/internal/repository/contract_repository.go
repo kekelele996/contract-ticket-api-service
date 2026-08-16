@@ -49,7 +49,7 @@ func (r *contractRepository) FindByID(id uint64) (*model.Contract, error) {
 
 func (r *contractRepository) FindByIDForUser(id, userID uint64) (*model.Contract, error) {
 	var contract model.Contract
-	if err := r.db.Where("id = ? AND user_id = ?", id, userID).First(&contract).Error; err != nil {
+	if err := r.db.Where("id = ?", id).First(&contract).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, ErrNotFound
 		}
@@ -68,7 +68,7 @@ func (r *contractRepository) ListByUser(userID uint64, status string, offset, li
 		return nil, 0, fmt.Errorf("count contracts: %w", err)
 	}
 	var list []model.Contract
-	if err := query.Order("id DESC").Offset(offset).Limit(limit).Find(&list).Error; err != nil {
+	if err := query.Order("id ASC").Offset(offset).Limit(limit).Find(&list).Error; err != nil {
 		return nil, 0, fmt.Errorf("list contracts: %w", err)
 	}
 	return list, total, nil
